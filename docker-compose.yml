@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  app:
+    image: node:14-alpine
+    environment:
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASS=password      
+      - DB_NAME=db
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: sh -c "npm install --production
+              && npm start"
+
+  postgres:
+    image: postgres:alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+        - 8080:8080
